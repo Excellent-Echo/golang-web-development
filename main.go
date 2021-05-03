@@ -18,6 +18,9 @@ func main() {
 	// tidak bisa menghandle params /product/:id_product
 	http.HandleFunc("/product", handler.ProductHandler)
 	http.HandleFunc("/list_product", handler.ListProductHandler)
+	http.HandleFunc("/get_post", handler.GetPost)
+	http.HandleFunc("/form_data", handler.FormHandler)
+	http.HandleFunc("/process", handler.PostFormHandler)
 
 	port := "localhost:3000"
 	fmt.Println("running on port", port)

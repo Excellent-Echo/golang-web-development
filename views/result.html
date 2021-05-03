@@ -1,0 +1,23 @@
+{{ template "layout" .}}
+
+{{ define "utama"}}
+<div class="container">
+    <table class="table">
+        <thead>
+            <tr>
+            <td>name</td>
+            <td>pesan</td>
+            <td>checkbox</td>
+        </tr>
+        </thead>
+        <tbody>
+            <tr>
+            <td>{{ .name }}</td>
+            <td>{{ .message }}</td>
+            <td>{{ .checkbox }}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+{{ end }}

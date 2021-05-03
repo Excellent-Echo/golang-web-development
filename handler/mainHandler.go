@@ -66,3 +66,62 @@ func ListProductHandler(w http.ResponseWriter, r *http.Request) {
 
 	tmpl.Execute(w, list)
 }
+
+// contoh method GET
+func GetPost(w http.ResponseWriter, r *http.Request) {
+	// r.Method untuk mengecek method yang dikirim oleh user
+	// kita bisa menggunakan method lain, PUT, PATCH, DELETE
+	if r.Method == "POST" {
+		w.Write([]byte("ini adalah method POST"))
+		return
+	}
+
+	http.NotFound(w, r)
+}
+
+func FormHandler(w http.ResponseWriter, r *http.Request) {
+	tmpl, err := template.ParseFiles(path.Join("views", "form.html"))
+
+	if err != nil {
+		http.Error(w, "error rendering html", http.StatusInternalServerError)
+		return
+	}
+
+	tmpl.Execute(w, nil)
+}
+
+func PostFormHandler(w http.ResponseWriter, r *http.Request) {
+
+	if r.Method == "POST" {
+		err := r.ParseForm()
+
+		if err != nil {
+			http.Error(w, "error rendering html", http.StatusInternalServerError)
+			return
+		}
+
+		name := r.Form.Get("name")
+		pesan := r.Form.Get("pesan")
+		checkbox := r.Form.Get("checkbox")
+
+		data := map[string]interface{}{
+			"name":     name,
+			"message":  pesan,
+			"checkbox": checkbox,
+		}
+
+		tmpl, err := template.ParseFiles(path.Join("views", "result.html"), path.Join("views", "layout.html"))
+
+		if err != nil {
+			http.Error(w, "error rendering html", http.StatusInternalServerError)
+			return
+		}
+
+		tmpl.Execute(w, data)
+
+		// w.Write([]byte())
+		return
+	}
+
+	http.NotFound(w, r)
+}
