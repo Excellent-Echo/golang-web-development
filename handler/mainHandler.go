@@ -1,11 +1,57 @@
 package handler
 
 import (
+	"encoding/json"
+	"fmt"
+	"golangWebDev/config"
 	"golangWebDev/entity"
+	"log"
 	"net/http"
 	"path"
 	"text/template"
 )
+
+func GetDatabaseHandler(w http.ResponseWriter, r *http.Request) {
+	db := config.Connect()
+	dataSQL, err := db.Query("SELECT * FROM students")
+	if err != nil {
+		fmt.Println("error query SQL")
+		return
+	}
+
+	var datas []entity.Student
+
+	for dataSQL.Next() {
+		var each = entity.Student{}
+
+		if err := dataSQL.Scan(&each.ID, &each.Fullname, &each.Age, &each.Batch); err != nil {
+			log.Fatal(err.Error())
+			return
+		}
+
+		datas = append(datas, each)
+	}
+
+	defer db.Close()
+
+	r.Header.Set("Content-Type", "application/json")
+
+	if r.Method == "GET" {
+		// excecute yg bener
+		byteDatas, err := json.Marshal(datas)
+
+		if err != nil {
+			http.Error(w, "error internal server", http.StatusInternalServerError)
+			return
+		}
+
+		w.Write(byteDatas)
+		return
+	}
+
+	// kalau bukan method get tampilkan error
+	http.Error(w, "error method not GET", http.StatusBadRequest)
+}
 
 func RootHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
